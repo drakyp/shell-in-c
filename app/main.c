@@ -16,7 +16,7 @@ int main() {
     input[strlen(input) - 1] = '\0';
     while (true){
 
-        printf("%s: command not found\n", inpute);
+        printf("%s: command not found\n", input);
     }
     // A REPL
 
