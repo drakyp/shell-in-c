@@ -13,10 +13,10 @@ int main() {
     fgets(input, 100, stdin);
 
     // take the input add the null character and return command not found
-    inp = input[strlen(input) - 1] = '\0';
+    input[strlen(input) - 1] = '\0';
     while (true){
 
-        printf("%s: command not found\n", inp);
+        printf("%s: command not found\n", inpute);
     }
     // A REPL
 
