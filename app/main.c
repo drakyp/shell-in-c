@@ -5,10 +5,12 @@
 
 int main() {
 
+    while(1){
+
     printf("$ ");
     fflush(stdout);
     
-    while(true){
+
     // Wait for user input
     char input[100];
     fgets(input, 100, stdin);
