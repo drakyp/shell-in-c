@@ -17,11 +17,22 @@ int main() {
 
         // take the input add the null character and return command not found
         input[strlen(input) - 1] = '\0';
+        char cop[100];
+        strcpy( cop , input);
+
+        //split into 2 part for echo
+        char *command = strtok(cop, " ");
+        char *arg = strtok(NULL, "");
+
+
 
         if (!strcmp(input,"exit 0")) //because strcmp return 0 if the input is equal 
             exit(0);
+        else if (!strcmp(command,"echo"))
+            printf("%s\n", arg);
 
-        printf("%s: command not found\n", input);
+        else 
+            printf("%s: command not found\n", input);
     }
 
 
