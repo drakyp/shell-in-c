@@ -28,8 +28,8 @@ int main() {
 
         if (!strcmp(input,"exit 0")) //because strcmp return 0 if the input is equal 
             exit(0);
-        else if (!strcmp(command,"echo"))
-            printf("%s\n", arg);
+        else if (!strcmp(command,"echo")) // or just (!strcmp(input, "echo", strlen("echo")) == 0) strlen because we only want to compare the 1st 4 char with echo
+            printf("%s\n", arg);// input + 5;continue;
 
         else 
             printf("%s: command not found\n", input);
