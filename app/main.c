@@ -3,6 +3,19 @@
 #include <string.h>
 #include <stdbool.h>
 
+
+const char *builtin[] = {"type", "echo", "exit"};
+
+int is_builtin(const char *command)
+{
+    for(int i = 0; i < sizeof(builtin) / sizeof(builtin[0]); i++)
+    {
+        if(!strcmp(command, builtin[i]))
+            return 1;
+    }
+    return 0;
+}
+
 int main() {
     //repl
     while(1){
@@ -31,6 +44,14 @@ int main() {
         else if (!strcmp(command,"echo")) // or just (!strcmp(input, "echo", strlen("echo")) == 0) strlen because we only want to compare the 1st 4 char with echo
             printf("%s\n", arg);// input + 5;continue;
 
+        else if ( !strncmp(input, "type", strlen("type")))
+        {
+            if (is_builtin(input + 5))
+                printf("%s is a shell builtin\n", input + 5);
+            else {
+                printf("%s: not found\n", input + 5);
+            }
+        }
         else 
             printf("%s: command not found\n", input);
     }
