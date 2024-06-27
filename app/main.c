@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include <unistd.h>
 
 const char *builtin[] = {"type", "echo", "exit"};
 
@@ -37,23 +37,57 @@ int main() {
         char *command = strtok(cop, " ");
         char *arg = strtok(NULL, "");
 
+        char *path = getenv("PATH");
+        char pathcop[1000];
+        strcpy (pathcop , path);
+
+        
+
+        
 
 
         if (!strcmp(input,"exit 0")) //because strcmp return 0 if the input is equal 
             exit(0);
-        else if (!strcmp(command,"echo")) // or just (!strcmp(input, "echo", strlen("echo")) == 0) strlen because we only want to compare the 1st 4 char with echo
+        else if (!strcmp (command , "echo" )) // or just (!strcmp(input, "echo", strlen("echo")) == 0) strlen because we only want to compare the 1st 4 char with echo
             printf("%s\n", arg);// input + 5;continue;
 
         else if ( !strncmp(input, "type", strlen("type")))
         {
-            if (is_builtin(input + 5))
-                printf("%s is a shell builtin\n", input + 5);
-            else {
-                printf("%s: not found\n", input + 5);
-            }
+            char filename[200];
+        int found = 0;
+            char *p1 = strtok(pathcop , ":");
+
+ if (is_builtin(input + 5))
+        { printf("%s is a shell builtin\n", input + 5);
+        found = 1;
         }
+            else{
+
+                    
+            while ( p1 != NULL)
+
+            {
+                sprintf(filename, "%s/%s", p1 , input + 5);
+            if (!access(filename ,  F_OK))
+            {
+                printf("%s is %s\n", input + 5, filename);
+                found = 1;
+                break;
+                
+            }
+            p1 = strtok(NULL, ":");
+
+            }
+            }
+
+          
+        if (!found)
+        {
+            printf("%s: not found\n", input + 5);
+        }
+    }
         else 
-            printf("%s: command not found\n", input);
+        printf("%s: command not found\n", input);
     }
 
 
