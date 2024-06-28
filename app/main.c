@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 const char *builtin[] = {"type", "echo", "exit"};
 
@@ -40,9 +43,8 @@ int main() {
         char *path = getenv("PATH");
         char pathcop[1000];
         strcpy (pathcop , path);
-
-        
-
+        char filename[200];
+        char *p1 = strtok(pathcop , ":");
         
 
 
@@ -53,41 +55,83 @@ int main() {
 
         else if ( !strncmp(input, "type", strlen("type")))
         {
-            char filename[200];
-        int found = 0;
-            char *p1 = strtok(pathcop , ":");
+            
+            int found = 0;
 
- if (is_builtin(input + 5))
-        { printf("%s is a shell builtin\n", input + 5);
-        found = 1;
-        }
+            if (is_builtin(input + 5))
+            { 
+                printf("%s is a shell builtin\n", input + 5);
+                found = 1;
+            }
             else{
 
-                    
-            while ( p1 != NULL)
+                //parsing the path to see where does the command belong 
+                while ( p1 != NULL)
 
-            {
-                sprintf(filename, "%s/%s", p1 , input + 5);
-            if (!access(filename ,  F_OK))
-            {
-                printf("%s is %s\n", input + 5, filename);
-                found = 1;
-                break;
-                
-            }
-            p1 = strtok(NULL, ":");
+                {
+                    sprintf(filename, "%s/%s", p1 , input + 5);
+                    if (!access(filename ,  F_OK))
+                    {
+                        printf("%s is %s\n", input + 5, filename);
+                        found = 1;
+                        break;
+
+                }
+                p1 = strtok(NULL, ":");
 
             }
-            }
-
-          
-        if (!found)
-        {
-            printf("%s: not found\n", input + 5);
         }
-    }
+
+
+            if (!found)
+                printf("%s: not found\n", input + 5);
+        }
         else 
-        printf("%s: command not found\n", input);
+        {
+            
+           int found = 0;
+            //check where is the fie located in the path
+            while ( p1 != NULL){
+
+                sprintf(filename, "%s/%s", p1, command);
+                if (!access(filename, F_OK))
+                {
+                    found = 1;
+                    break;
+                }
+                p1 = strtok(NULL , ":");
+            }
+            
+            if(found){
+                //stocking the arg into the array
+                char *argv[10];
+                argv[0] = command;
+                int argc = 1;
+                char *arg_t = strtok(arg, " ");
+                while (arg_t != NULL && argc < 9){
+                    argv[argc++] = arg_t;
+                    arg_t = strtok(NULL, " ");
+                }
+                argv[argc] = NULL;
+
+                //creating a new process to run the program
+                pid_t pid = fork();
+                
+                //case if it is the child, child process is set to 0
+                if (pid == 0){
+                    execvp(command, argv);
+                    perror("execvp failed");
+                    exit(1);
+                }
+                else{
+                    int status;
+                    waitpid(pid , &status, 0);
+                }
+            }
+            else {
+                printf("%s: command not found\n", input);
+            }
+        }
     }
 
 
