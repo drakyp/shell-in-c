@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 
 
-const char *builtin[] = {"type", "echo", "exit", "pwd"};
+const char *builtin[] = {"type", "echo", "exit", "pwd", "cd"};
 
 int is_builtin(const char *command)
 {
@@ -94,6 +94,14 @@ int main() {
                 printf("%s\n",cwd );
             else {
                 perror(" couldn't find the pwd");
+            }
+
+        }
+        else if( !strncmp(input, "cd", strlen("cd"))){
+           if(!access(arg, F_OK))
+                chdir(arg);
+            else {
+                printf("cd: %s: No such file or directory\n", arg);
             }
 
         }
