@@ -98,8 +98,11 @@ int main() {
 
         }
         else if( !strncmp(input, "cd", strlen("cd"))){
+            char *home = getenv("HOME");
            if(!access(arg, F_OK))
                 chdir(arg);
+            else if(!strcmp(arg, "~"))
+                    chdir(home);
             else {
                 printf("cd: %s: No such file or directory\n", arg);
             }
