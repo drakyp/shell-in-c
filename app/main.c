@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 
 
-const char *builtin[] = {"type", "echo", "exit"};
+const char *builtin[] = {"type", "echo", "exit", "pwd"};
 
 int is_builtin(const char *command)
 {
@@ -85,6 +85,17 @@ int main() {
 
             if (!found)
                 printf("%s: not found\n", input + 5);
+        }
+        else if (!strncmp(input, "pwd", strlen("pwd"))){
+            //allocate space for the path of the current working directory 
+            char cwd[1000];
+            //calling the function in the if, thus if it work will be store into cwd else will return NULL
+            if(getcwd(cwd, sizeof(cwd)) != NULL)
+                printf("%s\n",cwd );
+            else {
+                perror(" couldn't find the pwd");
+            }
+
         }
         else 
         {
